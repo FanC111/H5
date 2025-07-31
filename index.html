@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>西门子知识挑战</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- 西门子主题色配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#003366', // 西门子经典蓝
+                        secondary: '#10B981',
+                        accent: '#F59E0B',
+                        danger: '#EF4444',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+    <div class="container mx-auto px-4 py-8 max-w-2xl">
+        
+        <!-- 欢迎页 -->
+        <div id="welcome" class="flex flex-col items-center justify-center min-h-[80vh]">
+            <h1 class="text-3xl font-bold text-primary mb-4">西门子知识挑战</h1>
+            <p class="text-gray-600 mb-8">测一测你对西门子的了解！</p>
+            <button id="start" class="bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition">开始挑战</button>
+        </div>
+        
+        <!-- 答题页 -->
+        <div id="quiz" class="hidden">
+            <div class="mb-6">
+                <span class="text-gray-500">问题 1/1</span>
+                <span class="ml-auto text-gray-500">得分: <span id="score">0</span></span>
+            </div>
+            <div class="bg-white rounded-lg p-6 shadow">
+                <h2 class="text-xl font-bold mb-4">西门子老爷爷是谁？</h2>
+                <div class="space-y-2" id="options">
+                    <button class="w-full border p-3 rounded hover:bg-gray-50">A. 维尔纳冯</button>
+                    <button class="w-full border p-3 rounded hover:bg-gray-50">B. 约翰·哈尔斯克</button>
+                    <button class="w-full border p-3 rounded hover:bg-gray-50">C. 博乐仁</button>
+                    <button class="w-full border p-3 rounded hover:bg-gray-50">D. 西妹</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 恭喜页 -->
+        <div id="congrats" class="hidden flex flex-col items-center justify-center min-h-[80vh]">
+            <i class="fa fa-check text-6xl text-green-500 mb-4"></i>
+            <h2 class="text-2xl font-bold mb-4">恭喜！回答正确</h2>
+            <p class="text-gray-600 mb-8">你对西门子的历史了如指掌~</p>
+            <button id="complete" class="bg-primary text-white px-6 py-3 rounded-lg">查看结果</button>
+        </div>
+        
+        <!-- 复活页 -->
+        <div id="revive" class="hidden flex flex-col items-center justify-center min-h-[80vh]">
+            <i class="fa fa-times text-6xl text-red-500 mb-4"></i>
+            <h2 class="text-2xl font-bold mb-4">回答错误</h2>
+            <p class="text-gray-600 mb-4">邀请2位好友关注企业微信，即可复活！</p>
+            
+            <!-- 替换此处src为你的真实二维码 -->
+            <img src="https://via.placeholder.com/200x200?text=西妹二维码" alt="企业微信二维码" class="w-48 h-48 mb-4">
+            
+            <div class="mb-2">已邀请 <span id="invited">0</span>/2 位好友</div>
+            <div class="w-64 h-2 bg-gray-200 rounded mb-6">
+                <div id="progress" class="h-2 bg-yellow-500 rounded" style="width: 0%"></div>
+            </div>
+            
+            <button id="invite" class="bg-yellow-500 text-white px-6 py-3 rounded-lg mb-2">邀请好友助力</button>
+            <button id="giveup" class="border px-6 py-3 rounded-lg">放弃挑战</button>
+        </div>
+        
+        <!-- 结果页 -->
+        <div id="result" class="hidden flex flex-col items-center justify-center min-h-[80vh]">
+            <i class="fa fa-trophy text-6xl text-primary mb-4"></i>
+            <h2 class="text-2xl font-bold mb-4">挑战结束！</h2>
+            <p class="text-gray-600 mb-4">最终得分：<span id="final-score">0</span>分</p>
+            <button id="restart" class="bg-primary text-white px-6 py-3 rounded-lg">重新挑战</button>
+        </div>
+    </div>
+
+    <script>
+        // 页面切换函数
+        function show(id) {
+            document.querySelectorAll('[id]').forEach(el => el.classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        // 答题逻辑
+        let score = 0;
+        let invited = 0;
+
+        // 开始答题
+        document.getElementById('start').addEventListener('click', () => {
+            show('quiz');
+        });
+
+        // 选项点击（正确答案是A，对应索引0）
+        document.getElementById('options').addEventListener('click', (e) => {
+            if (e.target.tagName !== 'BUTTON') return;
+            const isCorrect = Array.from(document.getElementById('options').children).indexOf(e.target) === 0;
+            
+            // 禁用所有选项
+            document.getElementById('options').querySelectorAll('button').forEach(btn => btn.disabled = true);
+            
+            if (isCorrect) {
+                score = 10;
+                show('congrats');
+            } else {
+                show('revive');
+            }
+        });
+
+        // 邀请好友（模拟计数）
+        document.getElementById('invite').addEventListener('click', () => {
+            invited = Math.min(invited + 1, 2);
+            document.getElementById('invited').textContent = invited;
+            document.getElementById('progress').style.width = `${invited * 50}%`;
+            
+            if (invited >= 2) {
+                alert('复活成功！可重新答题~');
+                location.reload(); // 简单重置，实际需优化
+            }
+        });
+
+        // 放弃挑战
+        document.getElementById('giveup').addEventListener('click', () => {
+            show('result');
+            document.getElementById('final-score').textContent = score;
+        });
+
+        // 完成/重新挑战
+        document.getElementById('complete').addEventListener('click', () => {
+            show('result');
+            document.getElementById('final-score').textContent = score;
+        });
+        document.getElementById('restart').addEventListener('click', () => {
+            location.reload();
+        });
+    </script>
+</body>
+</html>
