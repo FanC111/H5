@@ -7,141 +7,250 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     
-    <!-- 西门子主题色配置 -->
+    <!-- 西门子主题色配置（#003366 为品牌代表色，可按需调整） -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: '#003366', // 西门子经典蓝
+                        primary: '#003366', // 西门子主题色
                         secondary: '#10B981',
                         accent: '#F59E0B',
                         danger: '#EF4444',
-                    }
+                        dark: '#1E293B',
+                        light: '#F8FAFC'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
                 }
             }
         }
     </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow { text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+            .btn-primary { 
+                @apply bg-primary text-white font-medium py-3 px-6 rounded-lg shadow-md 
+                hover:bg-primary/90 active:bg-primary/80 transition-all duration-300 transform 
+                hover:scale-105 active:scale-95; 
+            }
+        }
+    </style>
 </head>
-<body class="bg-gray-50 min-h-screen font-sans">
+<body class="bg-gradient-to-br from-light to-blue-50 min-h-screen font-sans text-dark overflow-x-hidden">
     <div class="container mx-auto px-4 py-8 max-w-2xl">
         
         <!-- 欢迎页 -->
-        <div id="welcome" class="flex flex-col items-center justify-center min-h-[80vh]">
-            <h1 class="text-3xl font-bold text-primary mb-4">西门子知识挑战</h1>
-            <p class="text-gray-600 mb-8">测一测你对西门子的了解！</p>
-            <button id="start" class="bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition">开始挑战</button>
+        <div id="welcome-page" class="flex flex-col items-center justify-center min-h-[80vh] transition-all duration-500">
+            <div class="text-center mb-12">
+                <h1 class="text-3xl font-bold text-primary mb-4 text-shadow animate-pulse">西门子知识挑战</h1>
+                <p class="text-gray-600 text-lg mb-8">测试你对西门子的了解！</p>
+                <div class="w-32 h-32 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-8">
+                    <i class="fa fa-graduation-cap text-6xl text-primary"></i>
+                </div>
+                <button id="start-btn" class="btn-primary">开始挑战 <i class="fa fa-arrow-right ml-2"></i></button>
+            </div>
         </div>
         
-        <!-- 答题页 -->
-        <div id="quiz" class="hidden">
-            <div class="mb-6">
-                <span class="text-gray-500">问题 1/1</span>
-                <span class="ml-auto text-gray-500">得分: <span id="score">0</span></span>
+        <!-- 答题页（单题） -->
+        <div id="quiz-page" class="hidden transition-all duration-500 transform translate-y-8 opacity-0">
+            <div class="mb-6 flex justify-between items-center">
+                <div class="bg-primary/10 text-primary px-4 py-2 rounded-full flex items-center">
+                    <i class="fa fa-question-circle mr-2"></i>
+                    <span id="question-number">问题 1/1</span>
+                </div>
+                <div class="bg-secondary/10 text-secondary px-4 py-2 rounded-full flex items-center">
+                    <i class="fa fa-trophy mr-2"></i>
+                    <span id="score">得分: 0</span>
+                </div>
             </div>
-            <div class="bg-white rounded-lg p-6 shadow">
-                <h2 class="text-xl font-bold mb-4">西门子老爷爷是谁？</h2>
-                <div class="space-y-2" id="options">
-                    <button class="w-full border p-3 rounded hover:bg-gray-50">A. 维尔纳冯</button>
-                    <button class="w-full border p-3 rounded hover:bg-gray-50">B. 约翰·哈尔斯克</button>
-                    <button class="w-full border p-3 rounded hover:bg-gray-50">C. 博乐仁</button>
-                    <button class="w-full border p-3 rounded hover:bg-gray-50">D. 西妹</button>
+            
+            <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+                <h2 id="question-text" class="text-xl md:text-2xl font-bold mb-6">西门子老爷爷是谁？</h2>
+                <div id="options-container" class="space-y-4">
+                    <button class="w-full text-left p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-all duration-200">
+                        <div class="flex items-center">
+                            <span class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center mr-3 font-medium">A</span>
+                            <span>维尔纳冯</span>
+                        </div>
+                    </button>
+                    <button class="w-full text-left p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-all duration-200">
+                        <div class="flex items-center">
+                            <span class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center mr-3 font-medium">B</span>
+                            <span>约翰·哈尔斯克</span>
+                        </div>
+                    </button>
+                    <button class="w-full text-left p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-all duration-200">
+                        <div class="flex items-center">
+                            <span class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center mr-3 font-medium">C</span>
+                            <span>博乐仁</span>
+                        </div>
+                    </button>
+                    <button class="w-full text-left p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-all duration-200">
+                        <div class="flex items-center">
+                            <span class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center mr-3 font-medium">D</span>
+                            <span>西妹</span>
+                        </div>
+                    </button>
                 </div>
             </div>
         </div>
         
-        <!-- 恭喜页 -->
-        <div id="congrats" class="hidden flex flex-col items-center justify-center min-h-[80vh]">
-            <i class="fa fa-check text-6xl text-green-500 mb-4"></i>
-            <h2 class="text-2xl font-bold mb-4">恭喜！回答正确</h2>
-            <p class="text-gray-600 mb-8">你对西门子的历史了如指掌~</p>
-            <button id="complete" class="bg-primary text-white px-6 py-3 rounded-lg">查看结果</button>
-        </div>
-        
-        <!-- 复活页 -->
-        <div id="revive" class="hidden flex flex-col items-center justify-center min-h-[80vh]">
-            <i class="fa fa-times text-6xl text-red-500 mb-4"></i>
-            <h2 class="text-2xl font-bold mb-4">回答错误</h2>
-            <p class="text-gray-600 mb-4">邀请2位好友关注企业微信，即可复活！</p>
-            
-            <!-- 替换此处src为你的真实二维码 -->
-            <img src="二维码.png" alt="企业微信二维码" class="w-48 h-48 mb-4">
-            
-            <div class="mb-2">已邀请 <span id="invited">0</span>/2 位好友</div>
-            <div class="w-64 h-2 bg-gray-200 rounded mb-6">
-                <div id="progress" class="h-2 bg-yellow-500 rounded" style="width: 0%"></div>
+        <!-- 恭喜页（正确） -->
+        <div id="congrats-page" class="hidden flex flex-col items-center justify-center min-h-[80vh] transition-all duration-500 transform translate-y-8 opacity-0">
+            <div class="text-center">
+                <div class="w-36 h-36 bg-secondary/20 rounded-full flex items-center justify-center mx-auto mb-8 animate-bounce">
+                    <i class="fa fa-check text-6xl text-secondary"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-secondary mb-4">恭喜！回答正确</h2>
+                <p class="text-gray-600 text-lg mb-8">你对西门子的历史了如指掌~</p>
+                <div class="mb-8 p-4 bg-gray-100 rounded-lg inline-block">
+                    <p class="text-gray-500">本次得分</p>
+                    <p id="congrats-score" class="text-4xl font-bold text-primary">+10分</p>
+                </div>
+                <button id="complete-btn" class="btn-primary">查看结果 <i class="fa fa-arrow-right ml-1"></i></button>
             </div>
-            
-            <button id="invite" class="bg-yellow-500 text-white px-6 py-3 rounded-lg mb-2">邀请好友助力</button>
-            <button id="giveup" class="border px-6 py-3 rounded-lg">放弃挑战</button>
         </div>
         
-        <!-- 结果页 -->
-        <div id="result" class="hidden flex flex-col items-center justify-center min-h-[80vh]">
-            <i class="fa fa-trophy text-6xl text-primary mb-4"></i>
-            <h2 class="text-2xl font-bold mb-4">挑战结束！</h2>
-            <p class="text-gray-600 mb-4">最终得分：<span id="final-score">0</span>分</p>
-            <button id="restart" class="bg-primary text-white px-6 py-3 rounded-lg">重新挑战</button>
+        <!-- 复活页（错误） -->
+        <div id="revive-page" class="hidden flex flex-col items-center justify-center min-h-[80vh] transition-all duration-500 transform translate-y-8 opacity-0">
+            <div class="text-center">
+                <div class="w-36 h-36 bg-danger/20 rounded-full flex items-center justify-center mx-auto mb-8 animate-shake">
+                    <i class="fa fa-times text-6xl text-danger"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-danger mb-4">回答错误</h2>
+                <p class="text-gray-600 text-lg mb-8">邀请好友关注企业微信，帮你复活！</p>
+                
+                <!-- 替换此处src为您的企业微信二维码链接 -->
+                <div class="border-4 border-gray-200 rounded-lg p-2 inline-block mb-4">
+                    <img src="https://via.placeholder.com/200x200?text=西妹二维码" alt="企业微信二维码" class="w-48 h-48 object-cover">
+                </div>
+                
+                <div class="mb-2 flex justify-between text-sm">
+                    <span>已邀请 <span id="invited-count">0</span>/2 位好友</span>
+                    <span id="revive-percentage">0%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5 mb-6">
+                    <div id="revive-progress" class="bg-accent h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+                
+                <button id="invite-friend-btn" class="btn-accent w-full mb-4">
+                    <i class="fa fa-share-alt mr-2"></i> 邀请好友助力
+                </button>
+                <button id="give-up-btn" class="border border-gray-300 text-gray-700 font-medium py-3 px-6 rounded-lg hover:bg-gray-100 transition-all duration-300 w-full">
+                    放弃挑战
+                </button>
+            </div>
+        </div>
+        
+        <!-- 结果页（完成/放弃） -->
+        <div id="complete-page" class="hidden flex flex-col items-center justify-center min-h-[80vh] transition-all duration-500 transform translate-y-8 opacity-0">
+            <div class="text-center">
+                <div class="w-36 h-36 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-8 animate-pulse">
+                    <i class="fa fa-trophy text-6xl text-primary"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-primary mb-4">挑战结束！</h2>
+                <div class="mb-8 p-6 bg-white rounded-xl shadow-lg inline-block">
+                    <p class="text-gray-500 mb-2">你的最终得分</p>
+                    <p id="final-score" class="text-5xl font-bold text-primary">0分</p>
+                </div>
+                <button id="restart-btn" class="btn-primary">重新挑战 <i class="fa fa-refresh mr-2"></i></button>
+            </div>
         </div>
     </div>
 
     <script>
-        // 页面切换函数
-        function show(id) {
-            document.querySelectorAll('[id]').forEach(el => el.classList.add('hidden'));
-            document.getElementById(id).classList.remove('hidden');
-        }
-
-        // 答题逻辑
+        // 单题题库（已按需求配置）
+        const questions = [
+            {
+                text: "西门子老爷爷是谁？",
+                options: ["维尔纳冯", "约翰·哈尔斯克", "博乐仁", "西妹"],
+                correct: 0 // 正确选项为A（索引0）
+            }
+        ];
+        
+        let currentQuestion = 0;
         let score = 0;
-        let invited = 0;
-
-        // 开始答题
-        document.getElementById('start').addEventListener('click', () => {
-            show('quiz');
+        let invitedFriends = 0;
+        
+        // DOM元素绑定
+        const welcomePage = document.getElementById('welcome-page');
+        const quizPage = document.getElementById('quiz-page');
+        const congratsPage = document.getElementById('congrats-page');
+        const revivePage = document.getElementById('revive-page');
+        const completePage = document.getElementById('complete-page');
+        
+        const startBtn = document.getElementById('start-btn');
+        const completeBtn = document.getElementById('complete-btn');
+        const inviteFriendBtn = document.getElementById('invite-friend-btn');
+        const giveUpBtn = document.getElementById('give-up-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        
+        const questionNumber = document.getElementById('question-number');
+        const optionsContainer = document.getElementById('options-container');
+        const scoreDisplay = document.getElementById('score');
+        const congratsScore = document.getElementById('congrats-score');
+        const finalScore = document.getElementById('final-score');
+        
+        const invitedCount = document.getElementById('invited-count');
+        const reviveProgress = document.getElementById('revive-progress');
+        const revivePercentage = document.getElementById('revive-percentage');
+        
+        // 页面切换逻辑
+        function showPage(page) {
+            [welcomePage, quizPage, congratsPage, revivePage, completePage].forEach(p => p.classList.add('hidden'));
+            page.classList.remove('hidden');
+            setTimeout(() => page.classList.remove('translate-y-8', 'opacity-0'), 50);
+        }
+        
+        // 加载题目（单题直接加载）
+        function loadQuestion() {
+            const question = questions[currentQuestion];
+            questionNumber.textContent = `问题 ${currentQuestion + 1}/${questions.length}`;
+            // 选项已静态写死，如需动态生成可扩展
+            showPage(quizPage);
+        }
+        
+        // 检查答案（绑定选项点击事件）
+        optionsContainer.querySelectorAll('button').forEach((btn, index) => {
+            btn.addEventListener('click', () => {
+                const isCorrect = index === questions[0].correct; // 单题固定取第0题
+                optionsContainer.querySelectorAll('button').forEach(opt => opt.disabled = true);
+                
+                if (isCorrect) {
+                    score += 10;
+                    scoreDisplay.textContent = `得分: ${score}`;
+                    congratsScore.textContent = `+10分`;
+                    showPage(congratsPage);
+                } else {
+                    showPage(revivePage);
+                }
+            });
         });
-
-        // 选项点击（正确答案是A，对应索引0）
-        document.getElementById('options').addEventListener('click', (e) => {
-            if (e.target.tagName !== 'BUTTON') return;
-            const isCorrect = Array.from(document.getElementById('options').children).indexOf(e.target) === 0;
+        
+        // 复活进度模拟（实际需结合后端，此处为演示）
+        inviteFriendBtn.addEventListener('click', () => {
+            invitedFriends = Math.min(invitedFriends + 1, 2);
+            const percent = (invitedFriends / 2) * 100;
+            reviveProgress.style.width = `${percent}%`;
+            invitedCount.textContent = invitedFriends;
+            revivePercentage.textContent = `${percent}%`;
             
-            // 禁用所有选项
-            document.getElementById('options').querySelectorAll('button').forEach(btn => btn.disabled = true);
-            
-            if (isCorrect) {
-                score = 10;
-                show('congrats');
-            } else {
-                show('revive');
+            if (invitedFriends >= 2) {
+                alert('复活成功！可重新答题');
+                location.reload(); // 简单模拟，实际需重置状态
             }
         });
-
-        // 邀请好友（模拟计数）
-        document.getElementById('invite').addEventListener('click', () => {
-            invited = Math.min(invited + 1, 2);
-            document.getElementById('invited').textContent = invited;
-            document.getElementById('progress').style.width = `${invited * 50}%`;
-            
-            if (invited >= 2) {
-                alert('复活成功！可重新答题~');
-                location.reload(); // 简单重置，实际需优化
-            }
-        });
-
-        // 放弃挑战
-        document.getElementById('giveup').addEventListener('click', () => {
-            show('result');
-            document.getElementById('final-score').textContent = score;
-        });
-
-        // 完成/重新挑战
-        document.getElementById('complete').addEventListener('click', () => {
-            show('result');
-            document.getElementById('final-score').textContent = score;
-        });
-        document.getElementById('restart').addEventListener('click', () => {
-            location.reload();
+        
+        // 完成流程
+        completeBtn.addEventListener('click', () => showPage(completePage));
+        giveUpBtn.addEventListener('click', () => showPage(completePage));
+        restartBtn.addEventListener('click', () => location.reload());
+        startBtn.addEventListener('click', () => {
+            welcomePage.classList.add('translate-y-8', 'opacity-0');
+            setTimeout(() => loadQuestion(), 500);
         });
     </script>
 </body>
